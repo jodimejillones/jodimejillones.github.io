@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Juan Manuel Serrano · Ciberseguridad</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #0a0e0a;
+      --surface:   #0f140f;
+      --card:      #131a13;
+      --border:    #1f2e1f;
+      --green:     #00ff88;
+      --green-dim: #00cc6a;
+      --green-muted: #1a4d33;
+      --text:      #d4e8d4;
+      --muted:     #5a7a5a;
+      --mono:      'Share Tech Mono', monospace;
+      --sans:      'Inter', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* scanline overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,255,136,0.015) 2px,
+        rgba(0,255,136,0.015) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ─── NAV ─────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(10,14,10,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      color: var(--green);
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-logo span { color: var(--muted); }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav ul a {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover { color: var(--green); }
+
+    /* ─── HERO ────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 80px 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.4;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,255,136,0.07) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -60%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--green);
+      letter-spacing: 0.15em;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 28px; height: 1px;
+      background: var(--green);
+    }
+
+    .hero-name {
+      font-family: var(--sans);
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+
+    .hero-name .accent { color: var(--green); }
+
+    .hero-title {
+      font-family: var(--mono);
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      color: var(--muted);
+      margin-bottom: 1.8rem;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 10px; height: 1.1em;
+      background: var(--green);
+      vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .hero-desc {
+      font-size: 1rem;
+      color: var(--text);
+      max-width: 580px;
+      margin-bottom: 2.5rem;
+      opacity: 0.85;
+    }
+
+    .hero-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      padding: 0.65rem 1.4rem;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: #000;
+      border: 1px solid var(--green);
+      font-weight: 700;
+    }
+
+    .btn-primary:hover { background: transparent; color: var(--green); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--green);
+      border: 1px solid var(--green-muted);
+    }
+
+    .btn-outline:hover { border-color: var(--green); background: rgba(0,255,136,0.05); }
+
+    .hero-photo {
+      position: absolute;
+      right: 0; top: 50%;
+      transform: translateY(-50%);
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      border: 2px solid var(--green-muted);
+      object-fit: cover;
+      filter: grayscale(30%) contrast(1.1);
+      box-shadow: 0 0 40px rgba(0,255,136,0.12), 0 0 80px rgba(0,255,136,0.05);
+      display: none; /* show with JS after load */
+    }
+
+    /* ─── SECTIONS ────────────────────────────────────────── */
+    section {
+      padding: 6rem 2rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      color: var(--green);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 3rem;
+      position: relative;
+      padding-bottom: 1rem;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 48px; height: 2px;
+      background: var(--green);
+    }
+
+    /* ─── TIMELINE ────────────────────────────────────────── */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 8px; bottom: 8px;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--green), var(--green-muted), transparent);
+    }
+
+    .tl-item {
+      position: relative;
+      margin-bottom: 3rem;
+    }
+
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -2.35rem; top: 8px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+    }
+
+    .tl-date {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--green);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.3rem;
+    }
+
+    .tl-role {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.15rem;
+    }
+
+    .tl-company {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 0.8rem;
+      font-family: var(--mono);
+    }
+
+    .tl-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .tl-bullets li {
+      font-size: 0.9rem;
+      color: var(--text);
+      opacity: 0.8;
+      padding-left: 1.2rem;
+      position: relative;
+    }
+
+    .tl-bullets li::before {
+      content: '▸';
+      position: absolute; left: 0;
+      color: var(--green);
+      font-size: 0.75rem;
+    }
+
+    /* ─── SKILLS GRID ─────────────────────────────────────── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .skill-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.2rem 1.4rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .skill-card:hover {
+      border-color: var(--green-muted);
+      box-shadow: 0 0 16px rgba(0,255,136,0.06);
+    }
+
+    .skill-cat {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: var(--green);
+      margin-bottom: 0.6rem;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      background: var(--green-muted);
+      color: var(--green);
+      padding: 0.2rem 0.55rem;
+      border-radius: 2px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ─── CTF / PROYECTOS ─────────────────────────────────── */
+    .ctf-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .ctf-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.4rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .ctf-card:hover {
+      border-color: var(--green-muted);
+      transform: translateY(-2px);
+    }
+
+    .ctf-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--green), transparent);
+    }
+
+    .ctf-platform {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      color: var(--green);
+      margin-bottom: 0.5rem;
+    }
+
+    .ctf-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .ctf-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .ctf-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .ctf-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--green);
+      text-decoration: none;
+      margin-top: 1rem;
+      opacity: 0.85;
+      transition: opacity 0.2s;
+    }
+
+    .ctf-link:hover { opacity: 1; }
+
+    /* ─── FORMACIÓN ───────────────────────────────────────── */
+    .edu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .edu-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.4rem 1.6rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem 1rem;
+      align-items: start;
+    }
+
+    .edu-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      grid-column: 1;
+    }
+
+    .edu-school {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--green);
+      grid-column: 1;
+    }
+
+    .edu-date {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      grid-column: 2;
+      grid-row: 1 / 3;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .edu-modules {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.6rem;
+    }
+
+    /* ─── CONTACTO ────────────────────────────────────────── */
+    #contacto {
+      padding: 6rem 2rem;
+    }
+
+    .contact-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-top: 3rem;
+    }
+
+    .contact-info p {
+      font-size: 0.95rem;
+      color: var(--text);
+      opacity: 0.8;
+      margin-bottom: 2rem;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--text);
+      text-decoration: none;
+      opacity: 0.75;
+      transition: opacity 0.2s, color 0.2s;
+    }
+
+    .contact-link:hover { opacity: 1; color: var(--green); }
+
+    .contact-icon {
+      width: 32px; height: 32px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      background: var(--card);
+    }
+
+    /* FORM */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .form-group label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--green);
+    }
+
+    .form-group input,
+    .form-group textarea {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      padding: 0.7rem 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: none;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--green-muted);
+    }
+
+    .form-group textarea { min-height: 120px; }
+
+    .form-submit {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      padding: 0.75rem 1.6rem;
+      background: var(--green);
+      color: #000;
+      border: none;
+      border-radius: 2px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      align-self: flex-start;
+    }
+
+    .form-submit:hover { background: transparent; color: var(--green); border: 1px solid var(--green); }
+
+    /* ─── FOOTER ──────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    footer span { color: var(--green); }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 680px) {
+      nav ul { display: none; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .hero-photo { display: none !important; }
+      .edu-card { grid-template-columns: 1fr; }
+      .edu-date { grid-row: auto; text-align: left; }
+    }
+
+    /* ─── ANIMATIONS ──────────────────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* Terminal typing effect */
+    .typed-text { border-right: none; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo"><span>~/</span>jm-serrano</div>
+    <ul>
+      <li><a href="#sobre-mi">about</a></li>
+      <li><a href="#experiencia">experience</a></li>
+      <li><a href="#formacion">education</a></li>
+      <li><a href="#skills">skills</a></li>
+      <li><a href="#ctf">ctf</a></li>
+      <li><a href="#contacto">contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero" style="max-width:100%; padding-top:80px;">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">SISTEMAS · CIBERSEGURIDAD · HACKING ÉTICO</div>
+      <h1 class="hero-name">Juan Manuel<br><span class="accent">Serrano</span></h1>
+      <div class="hero-title">
+        <span id="typed"></span><span class="cursor"></span>
+      </div>
+      <p class="hero-desc">
+        Técnico de Sistemas N2 con más de 2 años en soporte de infraestructura TI.
+        Cursando un Máster en Ciberseguridad & IA. Apasionado por el hacking ético,
+        los CTFs y la automatización.
+      </p>
+      <div class="hero-links">
+        <a href="#contacto" class="btn btn-primary">contactar</a>
+        <a href="https://www.linkedin.com/in/juan-manuel-serrano-alcaide-63b317256/" target="_blank" class="btn btn-outline">LinkedIn</a>
+        <a href="https://profile.hackthebox.com/profile/019cbfae-5c79-7008-91d3-6340c0364605" target="_blank" class="btn btn-outline">Hack The Box</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE MÍ -->
+  <section id="sobre-mi" style="border-top: 1px solid var(--border);">
+    <div class="section-label">// 01 ABOUT</div>
+    <h2 class="section-title">Sobre mí</h2>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items:start;" class="fade-in">
+      <div>
+        <p style="font-size:0.95rem; line-height:1.9; color: var(--text); opacity:0.85; margin-bottom:1.2rem;">
+          Soy técnico de sistemas con base sólida en soporte N1/N2, gestión de incidencias y administración de infraestructura TI. Mi trayectoria empezó en el soporte directo al usuario y ha evolucionado hacia la coordinación técnica y la resolución de incidencias complejas.
+        </p>
+        <p style="font-size:0.95rem; line-height:1.9; color: var(--text); opacity:0.85;">
+          Actualmente me especializo en ciberseguridad a través de un Máster con NTT Data, combinando formación teórica con práctica real en plataformas como Hack The Box. Mi objetivo es crecer hacia roles de pentesting, análisis de seguridad o SOC.
+        </p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:0.7rem;">
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:4px; padding:1rem 1.2rem; font-family:var(--mono); font-size:0.8rem;">
+          <div style="color:var(--muted); margin-bottom:0.3rem;">ubicación</div>
+          <div style="color:var(--text);">📍 Málaga, España</div>
+        </div>
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:4px; padding:1rem 1.2rem; font-family:var(--mono); font-size:0.8rem;">
+          <div style="color:var(--muted); margin-bottom:0.3rem;">experiencia</div>
+          <div style="color:var(--text);">2+ años · Soporte N1/N2</div>
+        </div>
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:4px; padding:1rem 1.2rem; font-family:var(--mono); font-size:0.8rem;">
+          <div style="color:var(--muted); margin-bottom:0.3rem;">formación actual</div>
+          <div style="color:var(--text);">Máster Ciberseguridad & IA</div>
+        </div>
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:4px; padding:1rem 1.2rem; font-family:var(--mono); font-size:0.8rem;">
+          <div style="color:var(--muted); margin-bottom:0.3rem;">certificación objetivo</div>
+          <div style="color:var(--green);">eJPTv2 · INE / OffSec</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCIA -->
+  <section id="experiencia" style="border-top: 1px solid var(--border);">
+    <div class="section-label">// 02 EXPERIENCE</div>
+    <h2 class="section-title">Experiencia Laboral</h2>
+    <div class="timeline fade-in">
+
+      <div class="tl-item">
+        <div class="tl-date">SEPT 2025 — PRESENTE</div>
+        <div class="tl-role">Técnico de Sistemas N2 · IT Support Specialist</div>
+        <div class="tl-company">MR Informática · Málaga</div>
+        <ul class="tl-bullets">
+          <li>Gestión y resolución de incidencias complejas de infraestructura TI con SLA definido.</li>
+          <li>Supervisión, escalado y seguimiento de incidencias críticas vía sistema de ticketing.</li>
+          <li>Coordinación y organización del equipo técnico de soporte.</li>
+          <li>Mantenimiento de infraestructura de red: switches y routers corporativos.</li>
+          <li>Reducción del tiempo medio de resolución mediante procedimientos de escalado optimizados.</li>
+        </ul>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-date">JUL 2023 — SEPT 2025</div>
+        <div class="tl-role">Técnico de Sistemas N1 · IT Support Technician</div>
+        <div class="tl-company">MR Informática · Málaga</div>
+        <ul class="tl-bullets">
+          <li>Soporte técnico a usuarios finales: hardware, software y conectividad.</li>
+          <li>Instalación, configuración y mantenimiento de equipos y software corporativo.</li>
+          <li>Mantenimiento preventivo y correctivo de sistemas y redes locales.</li>
+          <li>Gestión de inventario de activos TI y documentación técnica de procedimientos.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FORMACIÓN -->
+  <section id="formacion" style="border-top: 1px solid var(--border);">
+    <div class="section-label">// 03 EDUCATION</div>
+    <h2 class="section-title">Formación Académica</h2>
+    <div class="edu-list fade-in">
+
+      <div class="edu-card">
+        <div class="edu-title">Máster en Ciberseguridad e Inteligencia Artificial</div>
+        <div class="edu-school">Evolve Career · NTT Data</div>
+        <div class="edu-date">OCT 2025 — PRESENTE</div>
+        <div class="edu-modules">
+          <span class="tag">Hacking Ético</span>
+          <span class="tag">Redes & Protocolos</span>
+          <span class="tag">Reconocimiento & OSINT</span>
+          <span class="tag">Metasploit</span>
+          <span class="tag">Privilege Escalation</span>
+          <span class="tag">Pivoting & AD</span>
+          <span class="tag">CrackMapExec</span>
+          <span class="tag">Informes Pentest</span>
+          <span class="tag">Proyecto Final: Auditoría Real</span>
+        </div>
+      </div>
+
+      <div class="edu-card">
+        <div class="edu-title">CFGS – Administración de Sistemas Informáticos en Red (ASIR)</div>
+        <div class="edu-school">Formación Profesional</div>
+        <div class="edu-date">AGO 2020 — JUL 2023</div>
+      </div>
+
+      <div class="edu-card">
+        <div class="edu-title">CFGM – Sistemas Microinformáticos y Redes (SMR)</div>
+        <div class="edu-school">Formación Profesional</div>
+        <div class="edu-date">SEPT 2018 — JUN 2020</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" style="border-top: 1px solid var(--border);">
+    <div class="section-label">// 04 SKILLS</div>
+    <h2 class="section-title">Habilidades Técnicas</h2>
+    <div class="skills-grid fade-in">
+
+      <div class="skill-card">
+        <div class="skill-cat">SISTEMAS OPERATIVOS</div>
+        <div class="skill-tags">
+          <span class="tag">Windows Server</span>
+          <span class="tag">Linux (Kali/Debian)</span>
+          <span class="tag">macOS</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-cat">REDES</div>
+        <div class="skill-tags">
+          <span class="tag">TCP/IP</span>
+          <span class="tag">DNS</span>
+          <span class="tag">DHCP</span>
+          <span class="tag">Wireshark</span>
+          <span class="tag">Nmap</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-cat">PENTESTING & OSINT</div>
+        <div class="skill-tags">
+          <span class="tag">Metasploit</span>
+          <span class="tag">Burp Suite</span>
+          <span class="tag">Gobuster</span>
+          <span class="tag">Maltego</span>
+          <span class="tag">SQLmap</span>
+          <span class="tag">CrackMapExec</span>
+          <span class="tag">Impacket</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-cat">SCRIPTING</div>
+        <div class="skill-tags">
+          <span class="tag">Bash</span>
+          <span class="tag">PowerShell</span>
+          <span class="tag">Python</span>
+          <span class="tag">SQL</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-cat">HERRAMIENTAS TI</div>
+        <div class="skill-tags">
+          <span class="tag">Active Directory</span>
+          <span class="tag">VMware</span>
+          <span class="tag">VirtualBox</span>
+          <span class="tag">GLPI</span>
+          <span class="tag">ServiceDesk</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-cat">PLATAFORMAS CTF</div>
+        <div class="skill-tags">
+          <span class="tag">Hack The Box</span>
+          <span class="tag">TryHackMe</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTF / PROYECTOS -->
+  <section id="ctf" style="border-top: 1px solid var(--border);">
+    <div class="section-label">// 05 PROJECTS & CTF</div>
+    <h2 class="section-title">CTF & Proyectos</h2>
+    <div class="ctf-grid fade-in">
+
+      <div class="ctf-card">
+        <div class="ctf-platform">HACK THE BOX</div>
+        <div class="ctf-title">Perfil activo HTB</div>
+        <div class="ctf-desc">Resolución de máquinas en plataforma HTB practicando técnicas reales de pentesting: enumeración, explotación, escalada de privilegios y post-explotación.</div>
+        <div class="ctf-tags">
+          <span class="tag">Enumeración</span>
+          <span class="tag">Exploits</span>
+          <span class="tag">PrivEsc</span>
+        </div>
+        <a href="https://profile.hackthebox.com/profile/019cbfae-5c79-7008-91d3-6340c0364605" target="_blank" class="ctf-link">→ ver perfil</a>
+      </div>
+
+      <div class="ctf-card">
+        <div class="ctf-platform">MÁSTER · PROYECTO</div>
+        <div class="ctf-title">Auditoría de Seguridad Completa</div>
+        <div class="ctf-desc">Proyecto final del Máster: simulación de una auditoría real aplicando todas las fases del hacking ético, desde reconocimiento hasta elaboración del informe ejecutivo.</div>
+        <div class="ctf-tags">
+          <span class="tag">OSINT</span>
+          <span class="tag">Metasploit</span>
+          <span class="tag">Pivoting</span>
+          <span class="tag">Informe</span>
+        </div>
+      </div>
+
+      <div class="ctf-card">
+        <div class="ctf-platform">LAB PERSONAL</div>
+        <div class="ctf-title">EternalBlue + Ligolo-ng</div>
+        <div class="ctf-desc">Laboratorio de pivoting con EternalBlue (MS17-010), Ligolo-ng para movimiento lateral entre segmentos de red y enumeración de Active Directory con kerbrute y ldapsearch.</div>
+        <div class="ctf-tags">
+          <span class="tag">EternalBlue</span>
+          <span class="tag">Ligolo-ng</span>
+          <span class="tag">AD</span>
+          <span class="tag">kerbrute</span>
+        </div>
+      </div>
+
+      <div class="ctf-card">
+        <div class="ctf-platform">HOME LAB</div>
+        <div class="ctf-title">Servidor doméstico con DietPi</div>
+        <div class="ctf-desc">Infraestructura personal con Pi-hole (DNS blocker), Nextcloud, ruTorrent y stack de observabilidad con Grafana + Loki para monitorización de logs.</div>
+        <div class="ctf-tags">
+          <span class="tag">DietPi</span>
+          <span class="tag">Pi-hole</span>
+          <span class="tag">Grafana</span>
+          <span class="tag">Loki</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto" style="border-top: 1px solid var(--border); max-width:100%; background: var(--surface); padding: 6rem 2rem;">
+    <div class="contact-inner">
+      <div class="section-label">// 06 CONTACT</div>
+      <h2 class="section-title">Contacto</h2>
+      <div class="contact-grid fade-in">
+
+        <div class="contact-info">
+          <p>¿Tienes una oferta, proyecto o simplemente quieres hablar de ciberseguridad? Escríbeme.</p>
+          <div class="contact-links">
+            <a href="mailto:juanma.serrano31@gmail.com" class="contact-link">
+              <div class="contact-icon">✉</div>
+              juanma.serrano31@gmail.com
+            </a>
+            <a href="tel:+34638737361" class="contact-link">
+              <div class="contact-icon">📞</div>
+              638 737 361
+            </a>
+            <a href="https://www.linkedin.com/in/juan-manuel-serrano-alcaide-63b317256/" target="_blank" class="contact-link">
+              <div class="contact-icon">in</div>
+              LinkedIn
+            </a>
+            <a href="https://profile.hackthebox.com/profile/019cbfae-5c79-7008-91d3-6340c0364605" target="_blank" class="contact-link">
+              <div class="contact-icon">🟠</div>
+              Hack The Box
+            </a>
+          </div>
+        </div>
+
+        <form class="contact-form" onsubmit="handleForm(event)">
+          <div class="form-group">
+            <label>NOMBRE</label>
+            <input type="text" placeholder="Tu nombre" required />
+          </div>
+          <div class="form-group">
+            <label>EMAIL</label>
+            <input type="email" placeholder="tu@email.com" required />
+          </div>
+          <div class="form-group">
+            <label>MENSAJE</label>
+            <textarea placeholder="Escribe tu mensaje..." required></textarea>
+          </div>
+          <button type="submit" class="form-submit">ENVIAR →</button>
+          <div id="form-msg" style="font-family:var(--mono); font-size:0.8rem; color:var(--green); display:none;">
+            ✓ Mensaje enviado. Te responderé pronto.
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>Juan Manuel Serrano Alcaide</span> · Málaga, España · <span>2025</span>
+    <br style="margin-bottom:0.3rem;">
+    <span style="opacity:0.4;">Built with HTML · Hosted on GitHub Pages</span>
+  </footer>
+
+  <script>
+    // ── Typing effect ─────────────────────────────────
+    const phrases = [
+      'Técnico de Sistemas N2',
+      'Aprendiz de Hacker Ético',
+      'CTF Player @ Hack The Box',
+      'Máster Ciberseguridad & IA',
+    ];
+    let pi = 0, ci = 0, deleting = false;
+    const el = document.getElementById('typed');
+
+    function type() {
+      const current = phrases[pi];
+      if (!deleting) {
+        el.textContent = current.slice(0, ++ci);
+        if (ci === current.length) { deleting = true; setTimeout(type, 1800); return; }
+      } else {
+        el.textContent = current.slice(0, --ci);
+        if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; }
+      }
+      setTimeout(type, deleting ? 45 : 80);
+    }
+    type();
+
+    // ── Scroll fade-in ────────────────────────────────
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ── Form mock handler ─────────────────────────────
+    function handleForm(e) {
+      e.preventDefault();
+      document.getElementById('form-msg').style.display = 'block';
+      e.target.reset();
+    }
+
+    // ── Active nav link ───────────────────────────────
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('nav ul a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) current = s.id; });
+      navLinks.forEach(a => {
+        a.style.color = a.getAttribute('href') === '#' + current ? 'var(--green)' : '';
+      });
+    });
+  </script>
+
+</body>
+</html>
