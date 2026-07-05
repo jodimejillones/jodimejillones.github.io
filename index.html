@@ -694,7 +694,7 @@
           Soy técnico de sistemas con base sólida en soporte N1/N2, gestión de incidencias y administración de infraestructura TI. Mi trayectoria empezó en el soporte directo al usuario y ha evolucionado hacia la coordinación técnica y la resolución de incidencias complejas.
         </p>
         <p style="font-size:0.95rem; line-height:1.9; color: var(--text); opacity:0.85;">
-          Actualmente me especializo en ciberseguridad a través de un Máster con NTT Data, combinando formación teórica con práctica real en plataformas como Hack The Box. Mi objetivo es crecer hacia roles de pentesting, análisis de seguridad o SOC.
+          Actualmente me especializo en ciberseguridad a través de un Máster con Evolve Academy, combinando formación teórica con práctica real en plataformas como Hack The Box. Mi objetivo es crecer hacia roles de pentesting, análisis de seguridad o SOC.
         </p>
       </div>
       <div style="display:flex; flex-direction:column; gap:0.7rem;">
@@ -928,9 +928,9 @@
         <div class="contact-info">
           <p>¿Tienes una oferta, proyecto o simplemente quieres hablar de ciberseguridad? Escríbeme.</p>
           <div class="contact-links">
-            <a href="mailto:juanma.serrano31@gmail.com" class="contact-link">
+            <a href="mailto:manolfeliz@gmail.com" class="contact-link">
               <div class="contact-icon">✉</div>
-              juanma.serrano31@gmail.com
+              manolfeliz@gmail.com
             </a>
             <a href="tel:+34638737361" class="contact-link">
               <div class="contact-icon">📞</div>
@@ -947,18 +947,20 @@
           </div>
         </div>
 
-        <form class="contact-form" onsubmit="handleForm(event)">
+        <form class="contact-form" action="https://formspree.io/f/xaqgvyaj" method="POST">
+          <input type="hidden" name="_replyto" value="manolfeliz@gmail.com" />
+          <input type="hidden" name="_subject" value="Nuevo mensaje desde tu portfolio" />
           <div class="form-group">
             <label>NOMBRE</label>
-            <input type="text" placeholder="Tu nombre" required />
+            <input type="text" name="nombre" placeholder="Tu nombre" required />
           </div>
           <div class="form-group">
             <label>EMAIL</label>
-            <input type="email" placeholder="tu@email.com" required />
+            <input type="email" name="email" placeholder="tu@email.com" required />
           </div>
           <div class="form-group">
             <label>MENSAJE</label>
-            <textarea placeholder="Escribe tu mensaje..." required></textarea>
+            <textarea name="mensaje" placeholder="Escribe tu mensaje..." required></textarea>
           </div>
           <button type="submit" class="form-submit">ENVIAR →</button>
           <div id="form-msg" style="font-family:var(--mono); font-size:0.8rem; color:var(--green); display:none;">
